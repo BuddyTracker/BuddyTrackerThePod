@@ -11,6 +11,7 @@
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences
 #define GPSECHO false
+#define MAX_UINT8 255
 
 
 void onReceive(uint8_t packetSize);
