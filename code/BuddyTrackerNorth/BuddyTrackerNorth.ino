@@ -7,7 +7,7 @@
   #include <avr/power.h>
 #endif
 
-#define PIN 6
+#define NEO_DATA_PIN 6
 #define STRIP_LENGTH 7
 /* Set the delay between fresh samples */
 #define BNO055_SAMPLERATE_DELAY_MS (100)
@@ -22,7 +22,7 @@ Adafruit_BNO055 bno = Adafruit_BNO055(55);
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(STRIP_LENGTH, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(STRIP_LENGTH, NEO_DATA_PIN, NEO_GRB + NEO_KHZ800);
 uint32_t LED_COLOR = strip.Color(255, 0, 255);
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
@@ -61,7 +61,7 @@ void loop() {
     int LEDNorth = orientation2LED((float)event.orientation.x);
     
     clearStrip();
-    if(LEDNorth != -1){
+    if(LEDNorth > -1){
         strip.setPixelColor(LEDNorth, LED_COLOR);
     }
     strip.show();
@@ -70,11 +70,11 @@ void loop() {
 }
 
 int orientation2LED(float orientation){
-    int fov = 180;
-    int degreesPerLED = fov / STRIP_LENGTH;
+    const int fov = 180;
+    const int degreesPerLED = fov / STRIP_LENGTH;
     int offsetOrientation = orientation + fov / 2;
 
-    if(offsetOrientation > 360){
+    while(offsetOrientation > 360){
         offsetOrientation -= 360;
     }
     if(offsetOrientation > fov){

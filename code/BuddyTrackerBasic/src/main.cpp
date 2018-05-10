@@ -61,6 +61,7 @@ void onReceive(uint8_t packetSize) {
     while (LoRa.available()) {
         // read UUID
         uint64_t UUID = 0;
+        // TODO make shift and cast does not cause problems. Safest to mask
         UUID |= LoRa.read() << (0 * 8);
         UUID |= LoRa.read() << (1 * 8);
         UUID |= LoRa.read() << (2 * 8);
@@ -72,11 +73,13 @@ void onReceive(uint8_t packetSize) {
 
         // read partial lat
         uint16_t lat_partial = 0;
+        // TODO make shift and cast does not cause problems. Safest to mask
         lat_partial |= LoRa.read() << (0 * 8);
         lat_partial |= LoRa.read() << (1 * 8);
 
         // read partial lat
         uint16_t lng_partial = 0;
+        // TODO make shift and cast does not cause problems. Safest to mask
         lng_partial |= LoRa.read() << (0 * 8);
         lng_partial |= LoRa.read() << (1 * 8);
 
@@ -99,25 +102,28 @@ void sendPacket(BT_Packet packet){
 // currently adds unknown buddies
 // shows everyone
 void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
-    uint8_t index = findBuddyIndex(UUID);
+    uint8_t index = findBuddyBy(UUID);
     
     // add unknown buddies
     if(index == -1){
-        Buddy *newBuddy = new Buddy(UUID);
-        buddies.add(newBuddy);
-        index = buddies.size() - 1;
+        if (buddies.size() < MAX_UINT8) {
+          Buddy *newBuddy = new Buddy(UUID);
+          buddies.add(newBuddy);
+          index = buddies.size() - 1;
+          // TODO might be better to get index using findBuddyBy
+        }
     }
 
     // can't compute other Buddy's location without knowning own location
     if(myLat == LAT_LNG_ERR || myLng == LAT_LNG_ERR){
         return;
     }
-    // clear LSBs
-    uint32_t lat = myLat & 0x00;
-    uint32_t lng = myLng & 0x00;
+    // clear 8 LSBs
+    uint32_t lat = myLat & 0xFFFF0000;
+    uint32_t lng = myLng & 0xFFFF0000;
     // replace LSBs
-    lat &= lat_partial;
-    lng &= lng_partial;
+    lat |= lat_partial;
+    lng |= lng_partial;
 
     Buddy *currentBuddy = buddies.get(index);
     currentBuddy->setLat(lat);
@@ -180,7 +186,7 @@ void handleGPS(){
 
 
 // returns 0 if no match
-uint8_t findBuddyIndex(uint64_t UUID){
+uint8_t findBuddyBy(uint64_t UUID){
     for(uint8_t i = 0; i < buddies.size(); i++){
         Buddy *currentBuddy = buddies.get(i);
         if(UUID == currentBuddy->getUUID()){
