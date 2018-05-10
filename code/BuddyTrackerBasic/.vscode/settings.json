@@ -8,5 +8,6 @@
         "unordered_map": "cpp",
         "istream": "cpp",
         "memory": "cpp"
-    }
+    },
+    "C_Cpp.dimInactiveRegions": false
 }

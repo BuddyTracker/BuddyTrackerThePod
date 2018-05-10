@@ -14,6 +14,9 @@
 #define MAX_UINT8 255
 
 
+#ifndef UNIT_TEST
+
+
 void onReceive(uint8_t packetSize);
 void sendPacket(BT_Packet packet);
 void updateBuddy(uint64_t UUID, uint16_t lat, uint16_t lng);
@@ -196,3 +199,6 @@ uint8_t findBuddyBy(uint64_t UUID){
     }
     return 0;
 }
+
+
+#endif
