@@ -65,15 +65,15 @@ void onReceive(uint8_t packetSize) {
     while (LoRa.available()) {
         // read UUID
         uint64_t UUID = 0;
-        // TODO make shift and cast does not cause problems. Safest to mask
-        UUID |= LoRa.read() << (0 * 8);
-        UUID |= LoRa.read() << (1 * 8);
-        UUID |= LoRa.read() << (2 * 8);
-        UUID |= LoRa.read() << (3 * 8);
-        UUID |= LoRa.read() << (4 * 8);
-        UUID |= LoRa.read() << (5 * 8);
-        UUID |= LoRa.read() << (6 * 8);
-        UUID |= LoRa.read() << (7 * 8);
+        // masking ensures shift and cast don't cause problems
+        UUID |= ( (uint64_t)LoRa.read() << (0 * 8) ) & 0x0000000F;
+        UUID |= ( (uint64_t)LoRa.read() << (1 * 8) ) & 0x000000F0;
+        UUID |= ( (uint64_t)LoRa.read() << (2 * 8) ) & 0x00000F00;
+        UUID |= ( (uint64_t)LoRa.read() << (3 * 8) ) & 0x0000F000;
+        UUID |= ( (uint64_t)LoRa.read() << (4 * 8) ) & 0x000F0000;
+        UUID |= ( (uint64_t)LoRa.read() << (5 * 8) ) & 0x00F00000;
+        UUID |= ( (uint64_t)LoRa.read() << (6 * 8) ) & 0x0F000000;
+        UUID |= ( (uint64_t)LoRa.read() << (7 * 8) ) & 0xF0000000;
 
         // read partial lat
         uint16_t lat_partial = 0;
