@@ -1,1 +1,1 @@
-branches: http://nvie.com/posts/a-successful-git-branching-model/
+branching scheme: http://nvie.com/posts/a-successful-git-branching-model/

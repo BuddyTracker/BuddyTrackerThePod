@@ -19,7 +19,7 @@ void sendPacket(BT_Packet packet);
 void updateBuddy(uint64_t UUID, uint16_t lat, uint16_t lng);
 void startGPS();
 void handleGPS();
-uint8_t findBuddyIndex(uint64_t UUID);
+uint8_t findBuddyBy(uint64_t UUID);
 
 
 // TODO: define comparator for sorting LinkedList
