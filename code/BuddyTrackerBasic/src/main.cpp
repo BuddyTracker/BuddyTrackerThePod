@@ -20,8 +20,8 @@
 void onReceive(uint8_t packetSize);
 void sendPacket(BT_Packet packet);
 void updateBuddy(uint64_t UUID, uint16_t lat, uint16_t lng);
-void startGPS();
-void handleGPS();
+//void startGPS();
+//void handleGPS();
 uint8_t findBuddyBy(uint64_t UUID);
 
 
@@ -29,11 +29,20 @@ uint8_t findBuddyBy(uint64_t UUID);
 LinkedList<Buddy*> buddies;
 
 uint32_t timer = millis();
-const uint32_t LAT_LNG_ERR = -1;
-uint32_t myLat = LAT_LNG_ERR;
-uint32_t myLng = LAT_LNG_ERR;
-Uart GPSSerial (&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
-Adafruit_GPS GPS(&GPSSerial);
+const uint32_t LAT_LNG_ERR = 999999999;
+
+// TEST VALUES
+uint64_t myUUID = 1;
+int32_t myLat = 53631611;
+int32_t myLng = -113323975;
+// TEST VALUES
+//uint64_t myUUID = 2;
+//int32_t myLat = 51048600;
+//int32_t myLng = -114070800;
+// TEST VALUES
+
+//Uart GPSSerial (&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
+//Adafruit_GPS GPS(&GPSSerial);
 
 
 void setup() {
@@ -135,7 +144,7 @@ void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
 }
 
 
-void startGPS(){
+/*void startGPS(){
     // 9600 NMEA is the default baud rate for Adafruit MTK GPS's- some use 4800
     GPS.begin(9600);
     // uncomment this line to turn on RMC (recommended minimum) and GGA (fix data) including altitude
@@ -156,12 +165,12 @@ void startGPS(){
     
     // Ask for firmware version
     GPSSerial.println(PMTK_Q_RELEASE);
-}
+}*/
 
 
 // TODO: this is largely derived from example code, ensure it works
 // TODO: maybe handle with interupt instead?
-void handleGPS(){
+/*void handleGPS(){
     if (GPS.newNMEAreceived()) {
         // a tricky thing here is if we print the NMEA sentence, or data
         // we end up not listening and catching other sentences!
@@ -185,7 +194,7 @@ void handleGPS(){
             Serial.print(GPS.longitude, 4); Serial.println(GPS.lon);
         }
     }
-}
+}*/
 
 
 // returns 0 if no match

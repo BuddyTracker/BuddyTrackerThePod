@@ -1,13 +1,16 @@
 #include <Arduino.h>
 #include "BT_Packet.h"
 
-BT_Packet::BT_Packet(){
-    updatePending = false;
+BT_Packet::BT_Packet(uint64_t UUID, int32_t lat, int32_t lng){
+    this->UUID = UUID;
+    this->lat = lat;
+    this->lng = lng;
+    updatePending = true;
 }
 
-void BT_Packet::setGPS(uint32_t lat, uint32_t lng){
-    this->lat = (uint8_t)(lat & 0xffffffff);
-    this->lng = (uint8_t)(lng & 0xffffffff);
+void BT_Packet::setGPS(int32_t lat, int32_t lng){
+    this->lat = lat;
+    this->lng = lng;
     updatePending = true;
 }
 
@@ -16,6 +19,8 @@ bool BT_Packet::updatesPending(){
 }
 
 byte *BT_Packet::getPacket(){
+    updatePending = false;
+    
     byte packet[PACKET_LENGTH];
     for(int i = 0; i < 8; i++){
         packet[i] = (UUID >> (8 * i)) % 0xff;
