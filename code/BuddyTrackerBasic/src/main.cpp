@@ -8,9 +8,7 @@
 #include "Buddy.h"
 
 
-// Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
-// Set to 'true' if you want to debug and listen to the raw GPS sentences
-#define GPSECHO false
+#define DEBUG_MODE true
 #define MAX_UINT8 255
 
 
@@ -94,14 +92,14 @@ void onReceive(uint8_t packetSize) {
         // read partial lat
         uint16_t lat_partial = 0;
         // masking ensures shift and cast don't cause problems
-        lat_partial |= ( (uint16_t)LoRa.read() << (0 * 8) ) & 0x000F;
-        lat_partial |= ( (uint16_t)LoRa.read() << (1 * 8) ) & 0x00F0;
+        lat_partial |= ( (uint16_t)LoRa.read() << (0 * 8) ) & 0x00FF;
+        lat_partial |= ( (uint16_t)LoRa.read() << (1 * 8) ) & 0xFF00;
 
         // read partial lat
         uint16_t lng_partial = 0;
         // masking ensures shift and cast don't cause problems
-        lng_partial |= ( (uint16_t)LoRa.read() << (0 * 8) ) & 0x000F;
-        lng_partial |= ( (uint16_t)LoRa.read() << (1 * 8) ) & 0x00F0;
+        lng_partial |= ( (uint16_t)LoRa.read() << (0 * 8) ) & 0x00FF;
+        lng_partial |= ( (uint16_t)LoRa.read() << (1 * 8) ) & 0xFF00;
 
         // save data
         updateBuddy(UUID, lat_partial, lng_partial);
@@ -148,6 +146,15 @@ void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
     Buddy *currentBuddy = buddies.get(index);
     currentBuddy->setLat(lat);
     currentBuddy->setLng(lng);
+
+    if(DEBUG_MODE){
+        Serial.print("Buddy ");
+        Serial.print((uint8_t)UUID);
+        Serial.print(" is at ");
+        Serial.print(lat);
+        Serial.print(", ");
+        Serial.println(lng);
+    }
 }
 
 
