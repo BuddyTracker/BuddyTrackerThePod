@@ -38,6 +38,9 @@ int32_t myLng = -113323975;
 //int32_t myLat = 51048600;
 //int32_t myLng = -114070800;
 // TEST VALUES
+//uint64_t myUUID = ?;
+//int32_t myLat = LAT_LNG_ERR;
+//int32_t myLng = LAT_LNG_ERR;
 
 BT_Packet myPacket(myUUID, myLat, myLng);
 
