@@ -41,13 +41,15 @@ int32_t myLng = -113323975;
 //int32_t myLng = -114070800;
 // TEST VALUES
 
+BT_Packet myPacket(myUUID, myLat, myLng);
+
 //Uart GPSSerial (&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
 //Adafruit_GPS GPS(&GPSSerial);
 
 
 void setup() {
     Serial.begin(9600);
-    startGPS();
+    //startGPS();
     while (!Serial);
 
     Serial.println("BuddyTracker");
@@ -63,8 +65,13 @@ void setup() {
 void loop() {
     // TODO: collision avoidance
     
+    // TODO: only sending if updatesPending
+    sendPacket(myPacket);
+    
     // parse for a packet, and call onReceive with the result:
     onReceive(LoRa.parsePacket());
+
+    delay(200);
 }
 
 

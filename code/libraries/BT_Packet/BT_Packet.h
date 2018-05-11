@@ -7,7 +7,7 @@
 
 class BT_Packet {
     public:
-        BT_Packet(uint64_t UUID);
+        BT_Packet(uint64_t UUID, int32_t lat, int32_t lng);
         
         void setGPS(int32_t lat, int32_t lng);
         bool updatesPending();
