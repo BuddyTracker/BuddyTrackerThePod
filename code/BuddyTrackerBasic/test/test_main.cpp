@@ -11,7 +11,11 @@
 // // clean stuff up here
 // }
 
-void test_led_builtin_pin_number(void) {
+void test_empty_buddy_list(void) {
+    TEST_ASSERT_EQUAL(findBuddyBy((uint64_t)0), (uint8_t)0);
+}
+
+/*void test_led_builtin_pin_number(void) {
     TEST_ASSERT_EQUAL(LED_BUILTIN, 13);
 }
 
@@ -23,7 +27,7 @@ void test_led_state_high(void) {
 void test_led_state_low(void) {
     digitalWrite(LED_BUILTIN, LOW);
     TEST_ASSERT_EQUAL(digitalRead(LED_BUILTIN), LOW);
-}
+}*/
 
 void setup() {
     // NOTE!!! Wait for >2 secs
@@ -31,16 +35,16 @@ void setup() {
     delay(2000);
 
     UNITY_BEGIN();    // IMPORTANT LINE!
-    RUN_TEST(test_led_builtin_pin_number);
+    RUN_TEST(test_empty_buddy_list);
 
-    pinMode(LED_BUILTIN, OUTPUT);
+    //pinMode(LED_BUILTIN, OUTPUT);
 }
 
 uint8_t i = 0;
 uint8_t max_blinks = 5;
 
 void loop() {
-    if (i < max_blinks)
+    /*if (i < max_blinks)
     {
         RUN_TEST(test_led_state_high);
         delay(500);
@@ -50,7 +54,8 @@ void loop() {
     }
     else if (i == max_blinks) {
       UNITY_END(); // stop unit testing
-    }
+    }*/
+    delay(500);
 }
 
 #endif

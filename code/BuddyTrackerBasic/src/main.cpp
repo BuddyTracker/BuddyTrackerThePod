@@ -132,7 +132,6 @@ void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
     Buddy *currentBuddy = buddies.get(index);
     currentBuddy->setLat(lat);
     currentBuddy->setLng(lng);
-
 }
 
 
