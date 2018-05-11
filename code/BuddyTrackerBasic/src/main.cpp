@@ -112,7 +112,7 @@ void onReceive(uint8_t packetSize) {
 void sendPacket(BT_Packet packet){
     LoRa.beginPacket();
     byte *packetContents = packet.getPacket();
-    for(int i = 0; i < PACKET_LENGTH; i++){
+    for(uint8_t i = 0; i < PACKET_LENGTH; i++){
         LoRa.write( *(packetContents + i) );
     }
     LoRa.endPacket();
@@ -138,7 +138,7 @@ void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
     if(myLat == LAT_LNG_ERR || myLng == LAT_LNG_ERR){
         return;
     }
-    // clear 8 LSBs
+    // clear 2 LSBs
     uint32_t lat = myLat & 0xFFFF0000;
     uint32_t lng = myLng & 0xFFFF0000;
     // replace LSBs
