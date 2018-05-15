@@ -10,6 +10,7 @@
 
 #define DEBUG_MODE true
 #define MAX_UINT8 255
+#define LARGEST_INDEX MAX_UINT8 - 1
 
 
 #ifndef UNIT_TEST
@@ -126,8 +127,8 @@ void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
     uint8_t index = findBuddyBy(UUID);
     
     // add unknown buddies
-    if(index == 0){
-        if (buddies.size() < MAX_UINT8) {
+    if(index == MAX_UINT8){
+        if (buddies.size() < LARGEST_INDEX) {
           Buddy *newBuddy = new Buddy(UUID);
           buddies.add(newBuddy);
           index = buddies.size() - 1;
@@ -222,7 +223,7 @@ uint8_t findBuddyBy(uint64_t UUID){
             return i;
         }
     }
-    return 0;
+    return MAX_UINT8;
 }
 
 
