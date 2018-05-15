@@ -126,7 +126,7 @@ void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
     uint8_t index = findBuddyBy(UUID);
     
     // add unknown buddies
-    if(index == -1){
+    if(index == 0){
         if (buddies.size() < MAX_UINT8) {
           Buddy *newBuddy = new Buddy(UUID);
           buddies.add(newBuddy);
