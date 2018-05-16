@@ -73,7 +73,7 @@ void loop() {
     // parse for a packet, and call onReceive with the result:
     onReceive(LoRa.parsePacket());
 
-    delay(200);
+    delay(1000);
 }
 
 
@@ -105,6 +105,15 @@ void onReceive(uint8_t packetSize) {
         lng_partial |= ( (uint16_t)LoRa.read() << (0 * 8) ) & 0x00FF;
         lng_partial |= ( (uint16_t)LoRa.read() << (1 * 8) ) & 0xFF00;
 
+        if(DEBUG_MODE){
+            Serial.print("received UUID ");
+            Serial.println((uint32_t)UUID);
+            Serial.print("received lat ");
+            Serial.println(lat_partial);
+            Serial.print("received lng ");
+            Serial.println(lng_partial);
+        }
+        
         // save data
         updateBuddy(UUID, lat_partial, lng_partial);
     }
@@ -116,6 +125,10 @@ void sendPacket(BT_Packet packet){
     byte *packetContents = packet.getPacket();
     for(uint8_t i = 0; i < PACKET_LENGTH; i++){
         LoRa.write( *(packetContents + i) );
+        if(DEBUG_MODE){
+            Serial.write( *(packetContents + i) );
+            Serial.println();
+        }
     }
     LoRa.endPacket();
 }
@@ -144,8 +157,8 @@ void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
     uint32_t lat = myLat & 0xFFFF0000;
     uint32_t lng = myLng & 0xFFFF0000;
     // replace LSBs
-    lat |= lat_partial;
-    lng |= lng_partial;
+    lat |= lat_partial & 0x0000FFFF;
+    lng |= lng_partial & 0x0000FFFF;
 
     Buddy *currentBuddy = buddies.get(index);
     currentBuddy->setLat(lat);
@@ -153,7 +166,7 @@ void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
 
     if(DEBUG_MODE){
         Serial.print("Buddy ");
-        Serial.print((uint8_t)UUID);
+        Serial.print((uint32_t)UUID);
         Serial.print(" is at ");
         Serial.print(lat);
         Serial.print(", ");
