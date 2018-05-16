@@ -18,16 +18,17 @@ bool BT_Packet::updatesPending(){
     return updatePending;
 }
 
-byte *BT_Packet::getPacket(){
+//TODO: look into union + struct http://www.cplusplus.com/doc/tutorial/other_data_types/
+uint8_t *BT_Packet::getPacket(){
     updatePending = false;
 
-    byte *packet = new byte[PACKET_LENGTH];
+    //TODO: C++ memset, set packet to 0s
     for(int i = 0; i < 8; i++){
-        packet[i] = (uint8_t)(UUID >> (8 * i)) % 0xFF;
+        packet[i] = (uint8_t)(UUID >> (8 * i)) & 0x000000FF;
     }
-    packet[9] = (uint8_t) ( (lat && 0x0000FF00) >> 8 );
-    packet[10] = (uint8_t)(lat && 0x000000FF);
-    packet[11] = (uint8_t) ( (lng && 0x0000FF00) >> 8 );
-    packet[12] = (uint8_t)(lng && 0x000000FF);
+    packet[8] = (uint8_t) ( (lat & 0x0000FF00) >> 8 );
+    packet[9] = (uint8_t)(lat & 0x000000FF);
+    packet[10] = (uint8_t) ( (lng & 0x0000FF00) >> 8 );
+    packet[11] = (uint8_t)(lng & 0x000000FF);
     return packet;
 }

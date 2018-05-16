@@ -13,6 +13,7 @@ class BT_Packet {
         bool updatesPending();
         byte *getPacket();
     protected:
+        uint8_t packet[PACKET_LENGTH];
         uint64_t UUID;
         int32_t lat;
         int32_t lng;

@@ -31,7 +31,7 @@ uint32_t timer = millis();
 const uint32_t LAT_LNG_ERR = 999999999;
 
 // TEST VALUES
-uint64_t myUUID = 1;
+uint64_t myUUID = 12345;
 int32_t myLat = 53631611;
 int32_t myLng = -113323975;
 // TEST VALUES
@@ -68,12 +68,21 @@ void loop() {
     // TODO: collision avoidance
     
     // TODO: only sending if updatesPending
+    BT_Packet myPacket(myUUID, myLat, myLng);
+    if(DEBUG_MODE){
+        Serial.print("before: ");
+        for(uint8_t i = 0; i < PACKET_LENGTH; i++){
+            Serial.print(myPacket.getPacket()[i]);
+            Serial.print(" ");
+        }
+        Serial.println();
+    }
     sendPacket(myPacket);
     
     // parse for a packet, and call onReceive with the result:
     onReceive(LoRa.parsePacket());
 
-    delay(1000);
+    delay(3000);
 }
 
 
@@ -123,12 +132,20 @@ void onReceive(uint8_t packetSize) {
 void sendPacket(BT_Packet packet){
     LoRa.beginPacket();
     byte *packetContents = packet.getPacket();
-    for(uint8_t i = 0; i < PACKET_LENGTH; i++){
+    LoRa.write(packetContents, PACKET_LENGTH);
+    /*for(uint8_t i = 0; i < PACKET_LENGTH; i++){
         LoRa.write( *(packetContents + i) );
         if(DEBUG_MODE){
-            Serial.write( *(packetContents + i) );
-            Serial.println();
+            Serial.print( *(packetContents + i) );
+            Serial.print(" ");
         }
+    }*/
+    if(DEBUG_MODE){
+        for(uint8_t i = 0; i < PACKET_LENGTH; i++){
+            Serial.print(packetContents[i]);
+            Serial.print(" ");
+        }
+        Serial.println();
     }
     LoRa.endPacket();
 }
