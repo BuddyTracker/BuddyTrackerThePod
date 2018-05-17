@@ -42,8 +42,6 @@ int32_t myLng = -113323975;
 //uint64_t myUUID = ?;
 //int32_t myLat = LAT_LNG_ERR;
 //int32_t myLng = LAT_LNG_ERR;
-long lastSendTime = 0;        // last send time
-int interval = 2000;          // interval between sends
 
 BT_Packet myPacket(myUUID, myLat, myLng);
 
@@ -58,7 +56,7 @@ void setup() {
 
     Serial.println("BuddyTracker");
 
-    //TODO: remove magic numbers
+    //TODO: remove magic numbers (after getting LoRa working - easier to copy paste this way)
     LoRa.setPins(8, 4, 3);
     if (!LoRa.begin(915E6)) {
         Serial.println("Starting LoRa failed!");
@@ -70,24 +68,17 @@ void setup() {
 void loop() {
     // TODO: collision avoidance
     
-    if (millis() - lastSendTime > interval) {
-        sendPacket(myPacket);
-        Serial.println("Sending...");
-        lastSendTime = millis();            // timestamp the message
-        interval = random(2000) + 1000;    // 2-3 seconds
-    }
-    
     // parse for a packet, and call onReceive with the result:
     onReceive(LoRa.parsePacket());
     
     // TODO: only sending if updatesPending (or at least adjust timing)
-    //sendPacket(myPacket);
+    sendPacket(myPacket);
 
     delay(3000);
 }
 
 
-void onReceive(uint8_t packetSize) {
+void onReceive(int packetSize) {
     if(DEBUG_MODE){
         Serial.print("packet size: ");
         Serial.println(packetSize);
