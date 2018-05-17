@@ -7,15 +7,16 @@
 
 class BT_Packet {
     public:
-        BT_Packet();
+        BT_Packet(uint64_t UUID, int32_t lat, int32_t lng);
         
-        void setGPS(uint32_t lat, uint32_t lng);
+        void setGPS(int32_t lat, int32_t lng);
         bool updatesPending();
-        byte *getPacket();
+        uint8_t *getPacket();
     protected:
+        uint8_t packet[PACKET_LENGTH];
         uint64_t UUID;
-        uint8_t lat;
-        uint8_t lng;
+        int32_t lat;
+        int32_t lng;
         bool updatePending;
 };
 
