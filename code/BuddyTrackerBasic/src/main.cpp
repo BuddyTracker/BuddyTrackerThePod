@@ -35,9 +35,9 @@ uint64_t myUUID = 12345;
 int32_t myLat = 53631611;
 int32_t myLng = -113323975;
 // TEST VALUES
-//uint64_t myUUID = 2;
-//int32_t myLat = 51048600;
-//int32_t myLng = -114070800;
+//uint64_t myUUID = 12345;
+//int32_t myLat = 53631612;
+//int32_t myLng = -113323975;
 // TEST VALUES
 //uint64_t myUUID = ?;
 //int32_t myLat = LAT_LNG_ERR;
