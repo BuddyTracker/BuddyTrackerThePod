@@ -28,6 +28,7 @@
 void onReceive(int packetSize);
 void sendPacket(BT_Packet packet);
 void updateBuddy(uint64_t UUID, uint16_t lat, uint16_t lng);
+void updateUI();
 //void startGPS();
 //void handleGPS();
 uint8_t findBuddyBy(uint64_t UUID);
@@ -73,6 +74,10 @@ void setup() {
         Serial.println("Starting LoRa failed!");
         while (1);
     }
+
+    userInterface.begin();
+    //userInterface.setBrightness(100);
+    if(DEBUG_MODE) userInterface.test();
 }
 
 
@@ -89,17 +94,14 @@ void loop() {
     // parse for a packet, and call onReceive with the result:
     onReceive(LoRa.parsePacket());
     
-    // TODO: only sending if updatesPending (or at least adjust timing)
-    //sendPacket(myPacket);
-
-    //delay(3000);
+    updateUI();
 }
 
 
 void onReceive(int packetSize) {
     if (packetSize == 0) return; // if there's no packet, return
 
-    if(DEBUG_MODE)Serial.println("receiving...");
+    if(DEBUG_MODE) Serial.println("receiving...");
     
     while (LoRa.available()) {
         // read UUID
@@ -266,6 +268,18 @@ uint8_t findBuddyBy(uint64_t UUID){
         }
     }
     return MAX_UINT8;
+}
+
+
+void updateUI(){
+    userInterface.clear();
+
+    for(uint8_t i = 0; i < buddies.size(); i++){
+        Buddy *currentBuddy = buddies.get(i);
+        //currentBuddy->getLat()
+    }
+
+    userInterface.show();
 }
 
 
