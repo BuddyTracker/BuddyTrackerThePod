@@ -42,6 +42,8 @@ int32_t myLng = -113323975;
 //uint64_t myUUID = ?;
 //int32_t myLat = LAT_LNG_ERR;
 //int32_t myLng = LAT_LNG_ERR;
+long lastSendTime = 0;        // last send time
+int interval = 2000;          // interval between sends
 
 BT_Packet myPacket(myUUID, myLat, myLng);
 
@@ -68,28 +70,33 @@ void setup() {
 void loop() {
     // TODO: collision avoidance
     
-    // TODO: only sending if updatesPending
-    BT_Packet myPacket(myUUID, myLat, myLng);
-    if(DEBUG_MODE){
-        Serial.print("before: ");
-        for(uint8_t i = 0; i < PACKET_LENGTH; i++){
-            Serial.print(myPacket.getPacket()[i]);
-            Serial.print(" ");
-        }
-        Serial.println();
+    if (millis() - lastSendTime > interval) {
+        sendPacket(myPacket);
+        Serial.println("Sending...");
+        lastSendTime = millis();            // timestamp the message
+        interval = random(2000) + 1000;    // 2-3 seconds
     }
-    sendPacket(myPacket);
     
     // parse for a packet, and call onReceive with the result:
     onReceive(LoRa.parsePacket());
+    
+    // TODO: only sending if updatesPending (or at least adjust timing)
+    //sendPacket(myPacket);
 
     delay(3000);
 }
 
 
 void onReceive(uint8_t packetSize) {
+    if(DEBUG_MODE){
+        Serial.print("packet size: ");
+        Serial.println(packetSize);
+    }
+    
     if (packetSize == 0) return; // if there's no packet, return
 
+    if(DEBUG_MODE)Serial.println("receiving...");
+    
     while (LoRa.available()) {
         // read UUID
         uint64_t UUID = 0;

@@ -8,7 +8,13 @@
         "unordered_map": "cpp",
         "istream": "cpp",
         "memory": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "associative_base": "cpp",
+        "deque": "cpp",
+        "initializer_list": "cpp",
+        "limits": "cpp",
+        "list": "cpp",
+        "vector": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false
 }
