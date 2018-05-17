@@ -8,16 +8,20 @@
 #include "Buddy.h"
 
 
-#define DEBUG_MODE true
-#define MAX_UINT8 255
-#define LARGEST_INDEX MAX_UINT8 - 1
+#define DEBUG_MODE      true
+#define MAX_UINT8       255
+#define LARGEST_INDEX   MAX_UINT8 - 1
+#define LoRa_csPin      8
+#define LoRa_resetPin   4
+#define LoRa_irqPin     3
 
 
 #ifndef UNIT_TEST
 
 
-//TODO: equator case
-// TODO: when not moving, transmit less - also small angle approximation based on RSSI
+// TODO: equator case
+// TODO: when not moving, transmit less
+// TODO: small angle approximation based on max RSSI
 
 
 void onReceive(int packetSize);
@@ -62,8 +66,7 @@ void setup() {
 
     Serial.println("BuddyTracker");
 
-    //TODO: remove magic numbers (after getting LoRa working - easier to copy paste this way)
-    LoRa.setPins(8, 4, 3);
+    LoRa.setPins(LoRa_csPin, LoRa_resetPin, LoRa_irqPin);
     if (!LoRa.begin(915E6)) {
         Serial.println("Starting LoRa failed!");
         while (1);
