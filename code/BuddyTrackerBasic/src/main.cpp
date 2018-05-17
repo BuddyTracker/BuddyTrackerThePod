@@ -16,7 +16,7 @@
 #ifndef UNIT_TEST
 
 
-void onReceive(uint8_t packetSize);
+void onReceive(int packetSize);
 void sendPacket(BT_Packet packet);
 void updateBuddy(uint64_t UUID, uint16_t lat, uint16_t lng);
 //void startGPS();
@@ -42,6 +42,8 @@ int32_t myLng = -113323975;
 //uint64_t myUUID = ?;
 //int32_t myLat = LAT_LNG_ERR;
 //int32_t myLng = LAT_LNG_ERR;
+long lastSendTime = 0;        // last send time
+int interval = 2000;          // interval between sends
 
 BT_Packet myPacket(myUUID, myLat, myLng);
 
@@ -67,23 +69,25 @@ void setup() {
 
 void loop() {
     // TODO: collision avoidance
+
+    if (millis() - lastSendTime > interval) {
+        sendPacket(myPacket);
+        Serial.println("Sending...");
+        lastSendTime = millis();            // timestamp the message
+        interval = random(2000) + 1000;    // 2-3 seconds
+    }
     
     // parse for a packet, and call onReceive with the result:
     onReceive(LoRa.parsePacket());
     
     // TODO: only sending if updatesPending (or at least adjust timing)
-    sendPacket(myPacket);
+    //sendPacket(myPacket);
 
-    delay(3000);
+    //delay(3000);
 }
 
 
 void onReceive(int packetSize) {
-    if(DEBUG_MODE){
-        Serial.print("packet size: ");
-        Serial.println(packetSize);
-    }
-    
     if (packetSize == 0) return; // if there's no packet, return
 
     if(DEBUG_MODE)Serial.println("receiving...");
