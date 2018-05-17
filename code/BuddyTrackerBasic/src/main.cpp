@@ -16,6 +16,10 @@
 #ifndef UNIT_TEST
 
 
+//TODO: equator case
+// TODO: when not moving, transmit less - also small angle approximation based on RSSI
+
+
 void onReceive(int packetSize);
 void sendPacket(BT_Packet packet);
 void updateBuddy(uint64_t UUID, uint16_t lat, uint16_t lng);
@@ -174,11 +178,11 @@ void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
         return;
     }
     // clear 2 LSBs
-    uint32_t lat = myLat & 0xFFFF0000;
-    uint32_t lng = myLng & 0xFFFF0000;
+    int32_t lat = myLat & 0xFFFFFFFFFFFF0000;
+    int32_t lng = myLng & 0xFFFFFFFFFFFF0000;
     // replace LSBs
-    lat |= lat_partial & 0x0000FFFF;
-    lng |= lng_partial & 0x0000FFFF;
+    lat |= lat_partial & 0x000000000000FFFF;
+    lng |= lng_partial & 0x000000000000FFFF;
 
     Buddy *currentBuddy = buddies.get(index);
     currentBuddy->setLat(lat);
