@@ -28,7 +28,7 @@ uint8_t findBuddyBy(uint64_t UUID);
 LinkedList<Buddy*> buddies;
 
 uint32_t timer = millis();
-const uint32_t LAT_LNG_ERR = 999999999;
+const int32_t LAT_LNG_ERR = 999999999;
 
 // TEST VALUES
 uint64_t myUUID = 12345;
