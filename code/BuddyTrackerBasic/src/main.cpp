@@ -8,6 +8,9 @@
 #include "Buddy.h"
 
 
+//used to select test case (for multiple buddies)
+#define TEST_NUM        1
+
 #define DEBUG_MODE      true
 #define MAX_UINT8       255
 #define LARGEST_INDEX   MAX_UINT8 - 1
@@ -38,18 +41,11 @@ LinkedList<Buddy*> buddies;
 uint32_t timer = millis();
 const int32_t LAT_LNG_ERR = 999999999;
 
-// TEST VALUES
-uint64_t myUUID = 12345;
-int32_t myLat = 53631611;
-int32_t myLng = -113323975;
-// TEST VALUES
-//uint64_t myUUID = 106;
-//int32_t myLat = 53631612;
-//int32_t myLng = -113323975;
-// TEST VALUES
-//uint64_t myUUID = ?;
-//int32_t myLat = LAT_LNG_ERR;
-//int32_t myLng = LAT_LNG_ERR;
+uint64_t myUUID = 0; // TODO: implement random generation
+int32_t myLat = LAT_LNG_ERR;
+int32_t myLng = LAT_LNG_ERR;
+
+// TODO: fix types
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 
@@ -71,6 +67,21 @@ void setup() {
         Serial.println("Starting LoRa failed!");
         while (1);
     }
+
+    // TEST VALUES
+    switch(TEST_NUM) {
+        case 1:
+            myUUID = 12345;
+            myLat = 53631611;
+            myLng = -113323975;
+            break;
+        case 2:
+            myUUID = 106;
+            myLat = 53631612;
+            myLng = -113323975;
+            break;
+    }
+    // END TEST VALUES
 }
 
 
