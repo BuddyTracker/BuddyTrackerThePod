@@ -26,9 +26,9 @@ uint8_t *BT_Packet::getPacket(){
     for(int i = 0; i < 8; i++){
         packet[i] = (uint8_t)(UUID >> (8 * i)) & 0x000000FF;
     }
-    packet[8] = (uint8_t) ( (lat & 0x0000FF00) >> 8 );
-    packet[9] = (uint8_t)(lat & 0x000000FF);
-    packet[10] = (uint8_t) ( (lng & 0x0000FF00) >> 8 );
-    packet[11] = (uint8_t)(lng & 0x000000FF);
+    packet[9] = (uint8_t) ( (lat & 0x0000FF00) >> 8 );
+    packet[8] = (uint8_t)(lat & 0x000000FF);
+    packet[11] = (uint8_t) ( (lng & 0x0000FF00) >> 8 );
+    packet[10] = (uint8_t)(lng & 0x000000FF);
     return packet;
 }
