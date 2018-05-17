@@ -35,7 +35,7 @@ uint64_t myUUID = 12345;
 int32_t myLat = 53631611;
 int32_t myLng = -113323975;
 // TEST VALUES
-//uint64_t myUUID = 12345;
+//uint64_t myUUID = 106;
 //int32_t myLat = 53631612;
 //int32_t myLng = -113323975;
 // TEST VALUES
