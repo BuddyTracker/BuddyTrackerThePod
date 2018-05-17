@@ -14,6 +14,7 @@
 #define LoRa_csPin      8
 #define LoRa_resetPin   4
 #define LoRa_irqPin     3
+#define UI_pin          6
 
 
 #ifndef UNIT_TEST
@@ -54,6 +55,7 @@ long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 
 BT_Packet myPacket(myUUID, myLat, myLng);
+BT_UI userInterface(UI_pin);
 
 //Uart GPSSerial (&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
 //Adafruit_GPS GPS(&GPSSerial);
