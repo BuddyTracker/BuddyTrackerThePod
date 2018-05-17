@@ -56,6 +56,7 @@ void setup() {
 
     Serial.println("BuddyTracker");
 
+    //TODO: remove magic numbers
     LoRa.setPins(8, 4, 3);
     if (!LoRa.begin(915E6)) {
         Serial.println("Starting LoRa failed!");
@@ -93,14 +94,14 @@ void onReceive(uint8_t packetSize) {
         // read UUID
         uint64_t UUID = 0;
         // masking ensures shift and cast don't cause problems
-        UUID |= ( (uint64_t)LoRa.read() << (0 * 8) ) & 0x0000000F;
-        UUID |= ( (uint64_t)LoRa.read() << (1 * 8) ) & 0x000000F0;
-        UUID |= ( (uint64_t)LoRa.read() << (2 * 8) ) & 0x00000F00;
-        UUID |= ( (uint64_t)LoRa.read() << (3 * 8) ) & 0x0000F000;
-        UUID |= ( (uint64_t)LoRa.read() << (4 * 8) ) & 0x000F0000;
-        UUID |= ( (uint64_t)LoRa.read() << (5 * 8) ) & 0x00F00000;
-        UUID |= ( (uint64_t)LoRa.read() << (6 * 8) ) & 0x0F000000;
-        UUID |= ( (uint64_t)LoRa.read() << (7 * 8) ) & 0xF0000000;
+        UUID |= ( (uint64_t)LoRa.read() << (0 * 8) ) & 0x00000000000000FF;
+        UUID |= ( (uint64_t)LoRa.read() << (1 * 8) ) & 0x000000000000FF00;
+        UUID |= ( (uint64_t)LoRa.read() << (2 * 8) ) & 0x0000000000FF0000;
+        UUID |= ( (uint64_t)LoRa.read() << (3 * 8) ) & 0x00000000FF000000;
+        UUID |= ( (uint64_t)LoRa.read() << (4 * 8) ) & 0x000000FF00000000;
+        UUID |= ( (uint64_t)LoRa.read() << (5 * 8) ) & 0x0000FF0000000000;
+        UUID |= ( (uint64_t)LoRa.read() << (6 * 8) ) & 0x00FF000000000000;
+        UUID |= ( (uint64_t)LoRa.read() << (7 * 8) ) & 0xFF00000000000000;
 
         // read partial lat
         uint16_t lat_partial = 0;

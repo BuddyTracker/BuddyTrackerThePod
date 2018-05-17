@@ -11,7 +11,7 @@ class BT_Packet {
         
         void setGPS(int32_t lat, int32_t lng);
         bool updatesPending();
-        byte *getPacket();
+        uint8_t *getPacket();
     protected:
         uint8_t packet[PACKET_LENGTH];
         uint64_t UUID;
