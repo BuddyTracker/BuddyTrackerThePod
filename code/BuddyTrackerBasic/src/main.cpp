@@ -1,5 +1,7 @@
-#include <Adafruit_BNO055.h> // this is causing issues
+#include <Wire.h>
 #include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h> // this is causing issues
+
 #include <Arduino.h>
 #include <LinkedList.h>
 #include <LoRa.h>
