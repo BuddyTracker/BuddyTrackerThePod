@@ -1,4 +1,4 @@
-#include <Adafruit_BNO055.h>
+#include <Adafruit_BNO055.h> // this is causing issues
 #include <Adafruit_Sensor.h>
 #include <Arduino.h>
 #include <LinkedList.h>
@@ -62,7 +62,7 @@ long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 
 TinyGPSPlus gps;
-Adafruit_BNO055 orientationSensor = Adafruit_BNO055(55);
+//Adafruit_BNO055 orientationSensor = Adafruit_BNO055(55);
 BT_Packet myPacket(myUUID, myLat, myLng);
 BT_UI userInterface(UI_pin);
 
@@ -89,14 +89,13 @@ void setup() {
 
     buddyColor = userInterface.Color(LED_OFF, LED_OFF, LED_ON);
 
-    if(!orientationSensor.begin())
+    /*if(!orientationSensor.begin())
     {
-        /* There was a problem detecting the BNO055 ... check your connections */
         Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
         while(1);
     }
     delay(1000);
-    orientationSensor.setExtCrystalUse(true);
+    orientationSensor.setExtCrystalUse(true);*/
     // TODO: force user to calibrate
 }
 
@@ -240,15 +239,15 @@ uint8_t findBuddyBy(uint64_t UUID){
 
 void updateUI(){
     // Take average of multiple orientation readings
-    int numReadings = 6;
-    sensors_event_t event;
+    uint8_t numReadings = 6;
+    //sensors_event_t event;
     float headingDegrees = 0.0;
-    for(int currentReading = 0; currentReading < numReadings; currentReading++){
+    /*for(uint8_t currentReading = 0; currentReading < numReadings; currentReading++){
         orientationSensor.getEvent(&event);
         headingDegrees += event.orientation.x;
         delay(10); // required to get reading. NOT sure of exact value.
     }
-    headingDegrees /= numReadings;
+    headingDegrees /= numReadings;*/
     
     userInterface.clear();
 
