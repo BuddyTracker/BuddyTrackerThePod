@@ -5,7 +5,6 @@
 BT_UI::BT_UI(uint8_t pin){
     strip = Adafruit_NeoPixel(NUM_PIXELS, pin, NEO_GRBW + NEO_KHZ800);
     
-    buddyColor = strip.Color(LED_OFF, LED_OFF, LED_ON);
     waypointColor = strip.Color(LED_ON, LED_OFF, LED_OFF);
 
     fov = 180;
@@ -45,8 +44,20 @@ void BT_UI::clear(void){
     strip.clear();
 }
 
-void BT_UI::setBuddyLight(uint8_t light){
-    strip.setPixelColor(light, buddyColor);
+// Convert separate R,G,B into packed 32-bit RGB color.
+// Packed format is always RGB, regardless of LED strand color order.
+uint32_t BT_UI::Color(uint8_t r, uint8_t g, uint8_t b) {
+  return strip.Color(r, g, b);
+}
+
+// Convert separate R,G,B,W into packed 32-bit WRGB color.
+// Packed format is always WRGB, regardless of LED strand color order.
+uint32_t BT_UI::Color(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
+  return strip.Color(r, g, b, w);
+}
+
+void BT_UI::setBuddyLight(uint8_t light, uint32_t color){
+    strip.setPixelColor(light, color);
 }
 
 void BT_UI::setWaypointLight(uint8_t light){

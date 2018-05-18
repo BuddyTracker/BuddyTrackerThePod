@@ -11,13 +11,17 @@ class BT_UI {
     public:
         BT_UI(uint8_t pin);
 
-        void begin(void);
-        void setBrightness(uint8_t b);
-        void test(void);
-        void show(void);
-        void clear(void);
+        void
+            begin(void),
+            setBrightness(uint8_t b),
+            test(void),
+            show(void),
+            clear(void);
+        uint32_t
+            Color(uint8_t r, uint8_t g, uint8_t b),
+            Color(uint8_t r, uint8_t g, uint8_t b, uint8_t w);
 
-        void setBuddyLight(uint8_t light);
+        void setBuddyLight(uint8_t light, uint32_t color);
         void setWaypointLight(uint8_t light);
         uint8_t orientation2LED(float orientation);
     protected:

@@ -1,8 +1,8 @@
-#include <Adafruit_GPS.h>
 #include <Arduino.h>
 #include <LinkedList.h>
 #include <LoRa.h>
 #include <SPI.h>
+#include <TinyGPS++.h>
 #include "BT_Packet.h"
 #include "BT_UI.h"
 #include "Buddy.h"
@@ -29,8 +29,6 @@ void onReceive(int packetSize);
 void sendPacket(BT_Packet packet);
 void updateBuddy(uint64_t UUID, uint16_t lat, uint16_t lng);
 void updateUI();
-//void startGPS();
-//void handleGPS();
 uint8_t findBuddyBy(uint64_t UUID);
 
 
@@ -39,6 +37,12 @@ LinkedList<Buddy*> buddies;
 
 uint32_t timer = millis();
 const int32_t LAT_LNG_ERR = 999999999;
+uint32_t buddyColor;
+const uint16_t fieldOfView = 360;
+uint8_t numLEDs = 7; // must / should be an odd number
+// minus 1 because of center LED, plus 0.5 so that edge LED has same "width" as others
+uint8_t degreesPerLED = fieldOfView / (numLEDs - 1 + 0.5);
+
 
 // TEST VALUES
 uint64_t myUUID = 12345;
@@ -55,6 +59,7 @@ int32_t myLng = -113323975;
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 
+TinyGPSPlus gps;
 BT_Packet myPacket(myUUID, myLat, myLng);
 BT_UI userInterface(UI_pin);
 
@@ -78,6 +83,8 @@ void setup() {
     userInterface.begin();
     //userInterface.setBrightness(100);
     if(DEBUG_MODE) userInterface.test();
+
+    buddyColor = userInterface.Color(LED_OFF, LED_OFF, LED_ON);
 }
 
 
@@ -206,59 +213,6 @@ void updateBuddy(uint64_t UUID, uint16_t lat_partial, uint16_t lng_partial){
 }
 
 
-/*void startGPS(){
-    // 9600 NMEA is the default baud rate for Adafruit MTK GPS's- some use 4800
-    GPS.begin(9600);
-    // uncomment this line to turn on RMC (recommended minimum) and GGA (fix data) including altitude
-    GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
-    // uncomment this line to turn on only the "minimum recommended" data
-    //GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);
-    // For parsing data, we don't suggest using anything but either RMC only or RMC+GGA since
-    // the parser doesn't care about other sentences at this time
-    // Set the update rate
-    GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
-    // For the parsing code to work nicely and have time to sort thru the data, and
-    // print it out we don't suggest using anything higher than 1 Hz
-        
-    // Request updates on antenna status, comment out to keep quiet
-    GPS.sendCommand(PGCMD_ANTENNA);
-
-    delay(1000);
-    
-    // Ask for firmware version
-    GPSSerial.println(PMTK_Q_RELEASE);
-}*/
-
-
-// TODO: this is largely derived from example code, ensure it works
-// TODO: maybe handle with interupt instead?
-/*void handleGPS(){
-    if (GPS.newNMEAreceived()) {
-        // a tricky thing here is if we print the NMEA sentence, or data
-        // we end up not listening and catching other sentences!
-        // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
-        Serial.println(GPS.lastNMEA()); // this also sets the newNMEAreceived() flag to false
-        if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
-            return; // we can fail to parse a sentence in which case we should just wait for another
-    }
-    // if millis() or timer wraps around, we'll just reset it
-    if (timer > millis()) timer = millis();
-        
-    // approximately every 2 seconds or so, update lat and lng values
-    if (millis() - timer > 2000) {
-        Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
-        if (GPS.fix) {
-            myLat = GPS.latitude;
-            myLng = GPS.longitude;
-            Serial.print("Location: ");
-            Serial.print(GPS.latitude, 4); Serial.print(GPS.lat);
-            Serial.print(", ");
-            Serial.print(GPS.longitude, 4); Serial.println(GPS.lon);
-        }
-    }
-}*/
-
-
 // returns 0 if no match
 uint8_t findBuddyBy(uint64_t UUID){
     for(uint8_t i = 0; i < buddies.size(); i++){
@@ -272,11 +226,21 @@ uint8_t findBuddyBy(uint64_t UUID){
 
 
 void updateUI(){
+    // TODO: implement orientaion sensor to set this
+    int16_t headingDegrees = 0;
+    
     userInterface.clear();
 
     for(uint8_t i = 0; i < buddies.size(); i++){
         Buddy *currentBuddy = buddies.get(i);
-        //currentBuddy->getLat()
+        // TODO: move this into Buddy class to avoid recalculation
+        int16_t currentBuddyDegrees = TinyGPSPlus::courseTo(myLat, myLng,
+                currentBuddy->getLat(), currentBuddy->getLng());
+        int16_t degreesDifference = headingDegrees - currentBuddyDegrees;
+        while(degreesDifference > 180) degreesDifference -= 360; //correct wraparound
+        if(abs(degreesDifference) > fieldOfView / 2)
+            break; // out of FOV
+        userInterface.setBuddyLight(degreesDifference / degreesPerLED + numLEDs / 2, buddyColor);
     }
 
     userInterface.show();
