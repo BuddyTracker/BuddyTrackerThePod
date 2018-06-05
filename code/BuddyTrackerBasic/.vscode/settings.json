@@ -14,7 +14,8 @@
         "initializer_list": "cpp",
         "limits": "cpp",
         "list": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "locale": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false
 }
