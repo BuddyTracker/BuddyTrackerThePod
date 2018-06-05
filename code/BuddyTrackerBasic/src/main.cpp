@@ -50,20 +50,11 @@ uint8_t numLEDs = 7; // must / should be an odd number
 uint8_t degreesPerLED = fieldOfView / (numLEDs - 1 + 0.5);
 
 
-//uint64_t myUUID = ?;
-//int32_t myLat = LAT_LNG_ERR;
-//int32_t myLng = LAT_LNG_ERR;
-if(DEBUG_MODE){
-    if(DEBUG_ID == 1){
-        uint64_t myUUID = 12345;
-        int32_t myLat = 53631611;
-        int32_t myLng = -113323975;
-    } else if (DEBUG_ID == 2){
-        uint64_t myUUID = 106;
-        int32_t myLat = 53631612;
-        int32_t myLng = -113323975;
-    }
-}
+// TODO: properly initialize/set UUID
+uint64_t myUUID = 0;
+int32_t myLat = LAT_LNG_ERR;
+int32_t myLng = LAT_LNG_ERR;
+
 
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
@@ -95,6 +86,18 @@ void setup() {
     if(DEBUG_MODE) userInterface.test();
 
     buddyColor = userInterface.Color(LED_OFF, LED_OFF, LED_ON);
+
+    if(DEBUG_MODE){
+        if(DEBUG_ID == 1){
+            myUUID = 12345;
+            myLat = 53631611;
+            myLng = -113323975;
+        } else if (DEBUG_ID == 2){
+            myUUID = 106;
+            myLat = 53631612;
+            myLng = -113323975;
+        }
+    }
 
     /*if(!orientationSensor.begin())
     {
